@@ -1,3 +1,5 @@
+use crate::errors::ModelError;
+
 #[derive(Debug, PartialEq)]
 pub struct CallSettings {
     /// Maximum number of tokens to generate.
@@ -64,7 +66,7 @@ impl Default for CallSettings {
     fn default() -> Self {
         CallSettings {
             max_tokens: 2056,
-            temperature: 0,
+            temperature: 0.0,
             top_p: None,
             top_k: None,
             presence_penalty: None,
@@ -74,5 +76,23 @@ impl Default for CallSettings {
             max_retries: 2,
             headers: Vec::new(),
         }
+    }
+}
+
+impl CallSettings {
+    pub fn prepare(&mut self) -> Result<(), ModelError> {
+        if self.max_tokens < 1 {
+            return Err(ModelError::InvalidArgument(
+                "max_tokens must be greater than `1`".to_string(),
+            ));
+        }
+
+        if let Some(stop_sequences) = &self.stop_sequences {
+            if stop_sequences.is_empty() {
+                self.stop_sequences = None;
+            }
+        }
+
+        Ok(())
     }
 }

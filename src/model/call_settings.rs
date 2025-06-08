@@ -1,9 +1,6 @@
 use crate::prompt::{CallSettings, CoreMessage, Prompt};
 
-use super::LanguageModel;
-
-pub struct GenerateTextCallSettings<'a> {
-    model: &'a dyn LanguageModel,
+pub struct GenerateTextCallSettings {
     pub call_settings: CallSettings,
     pub prompt: Prompt,
     /**
@@ -16,14 +13,19 @@ pub struct GenerateTextCallSettings<'a> {
     pub max_steps: u32,
 }
 
-impl<'a> GenerateTextCallSettings<'a> {
-    pub fn new<T: LanguageModel>(model: &'a T) -> Self {
+impl Default for GenerateTextCallSettings {
+    fn default() -> Self {
         GenerateTextCallSettings {
-            model,
             call_settings: CallSettings::default(),
             prompt: Prompt::default(),
             max_steps: 1,
         }
+    }
+}
+
+impl GenerateTextCallSettings {
+    pub fn new() -> Self {
+        GenerateTextCallSettings::default()
     }
 
     pub fn temperature(mut self, temperature: f32) -> Self {

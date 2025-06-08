@@ -1,17 +1,12 @@
-mod chat_settings;
-mod settings;
-
-use std::str::FromStr;
-
-use chat_settings::OpenAIChatModelId;
-use settings::OpenAIProviderSettings;
+mod chat_model;
+mod provider_settings;
 
 use crate::{
     errors::{ModelError, ProviderError},
-    model::LanguageModel,
+    provider::LanguageModelProvider,
 };
-
-use super::LanguageModelProvider;
+use chat_model::{model_id::OpenAIChatModelId, OpenAIChatModel};
+use provider_settings::OpenAIProviderSettings;
 
 pub struct OpenAIProvider {
     pub settings: OpenAIProviderSettings,
@@ -31,7 +26,7 @@ impl OpenAIProvider {
     pub fn create_chat_model(
         &self,
         model_id: OpenAIChatModelId,
-    ) -> Result<Box<dyn LanguageModel>, ModelError> {
+    ) -> Result<OpenAIChatModel, ModelError> {
         unimplemented!(
             "OpenAIProvider::create_chat_model is not implemented yet. Model ID: {}",
             model_id
@@ -40,7 +35,8 @@ impl OpenAIProvider {
 }
 
 impl LanguageModelProvider for OpenAIProvider {
-    fn language_model(&self, model_id: &str) -> Result<Box<dyn LanguageModel>, ProviderError> {
+    type Model = OpenAIChatModel;
+    fn language_model(&self, model_id: &str) -> Result<Self::Model, ProviderError> {
         if model_id.is_empty() {
             return Err(ProviderError::InvalidModelId(format!(
                 "Provided an empty OpenAI model id"
