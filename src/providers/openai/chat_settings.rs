@@ -1,9 +1,10 @@
-use crate::{
-    model::{GenerateTextOptions, LanguageModel, LanguageModelCall, LanguageModelUsage},
-    prompt::{standarize_prompt::StandardizedPrompt, Prompt},
-    providers::openai::ModelError,
+use crate::errors::ModelError;
+use crate::model::{GenerateTextCallSettings, LanguageModel, LanguageModelCall};
+use crate::prompt::{standarize_prompt::StandardizedPrompt, Prompt};
+use std::{
+    fmt::{self},
+    str::FromStr,
 };
-pub mod model_id;
 
 pub enum OpenAIChatSettingsReasoningEffort {
     /// No reasoning effort, the model will not perform any reasoning.
@@ -145,7 +146,7 @@ impl LanguageModel for OpenAIChatModel {
         todo!()
     }
 
-    fn generate_text(&self, mut settings: GenerateTextOptions) -> Result<String, ModelError> {
+    fn generate_text(&self, settings: GenerateTextCallSettings) -> Result<String, ModelError> {
         if settings.max_steps < 1 {
             return Err(ModelError::InvalidArgument(format!(
                 "OpenAIChatModel requires at least 1 step, got {}",
@@ -154,10 +155,9 @@ impl LanguageModel for OpenAIChatModel {
         }
         // TODO: handle retry biz
 
-        let initial_prompt: StandardizedPrompt = StandardizedPrompt::try_from(settings.prompt)?;
-        settings.call_settings.prepare()?;
+        let initial_prompt = StandardizedPrompt::try_from::<Prompt>(settings.prompt)?;
 
-        let model_usage = LanguageModelUsage::default();
+        let call_settings = prepare_call_settings(&settings.call_settings);
 
         Ok("yeah yeah yeha".to_string())
     }

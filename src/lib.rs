@@ -1,4 +1,5 @@
 mod errors;
+mod generate_file;
 mod model;
 mod prompt;
 mod provider;
@@ -8,7 +9,7 @@ mod utils;
 #[cfg(test)]
 mod test {
     use crate::{
-        model::{GenerateTextCallSettings, LanguageModel},
+        model::{GenerateTextOptions, LanguageModel},
         provider::LanguageModelProvider,
         providers::openai::OpenAIProvider,
     };
@@ -21,7 +22,7 @@ mod test {
             Err(e) => panic!("Failed to build an openai model: {}", e),
         };
         let response = model.generate_text(
-            GenerateTextCallSettings::default()
+            GenerateTextOptions::default()
                 .system("You are a helpful assistant.".into())
                 .prompt("What is the capital of Nepal?".into()),
         );

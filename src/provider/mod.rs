@@ -1,3 +1,7 @@
+pub mod finish_reason;
+pub mod metadata;
+pub mod source;
+
 use crate::errors::ProviderError;
 use crate::model::LanguageModel;
 

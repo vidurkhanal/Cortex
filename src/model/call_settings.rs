@@ -1,6 +1,6 @@
 use crate::prompt::{CallSettings, CoreMessage, Prompt};
 
-pub struct GenerateTextCallSettings {
+pub struct GenerateTextOptions {
     pub call_settings: CallSettings,
     pub prompt: Prompt,
     /**
@@ -13,9 +13,9 @@ pub struct GenerateTextCallSettings {
     pub max_steps: u32,
 }
 
-impl Default for GenerateTextCallSettings {
+impl Default for GenerateTextOptions {
     fn default() -> Self {
-        GenerateTextCallSettings {
+        GenerateTextOptions {
             call_settings: CallSettings::default(),
             prompt: Prompt::default(),
             max_steps: 1,
@@ -23,9 +23,9 @@ impl Default for GenerateTextCallSettings {
     }
 }
 
-impl GenerateTextCallSettings {
+impl GenerateTextOptions {
     pub fn new() -> Self {
-        GenerateTextCallSettings::default()
+        GenerateTextOptions::default()
     }
 
     pub fn temperature(mut self, temperature: f32) -> Self {

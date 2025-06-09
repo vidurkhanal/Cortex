@@ -1,3 +1,6 @@
+use core::fmt;
+use std::str::FromStr;
+
 /// https://platform.openai.com/docs/models
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum OpenAIChatModelId {

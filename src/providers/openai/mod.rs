@@ -1,6 +1,8 @@
 mod chat_model;
 mod provider_settings;
 
+use std::str::FromStr;
+
 use crate::{
     errors::{ModelError, ProviderError},
     provider::LanguageModelProvider,
