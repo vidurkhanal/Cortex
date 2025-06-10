@@ -1,6 +1,8 @@
 use crate::{
-    model::{GenerateTextOptions, LanguageModel, LanguageModelCall, LanguageModelUsage},
-    prompt::{standarize_prompt::StandardizedPrompt, Prompt},
+    model::{
+        LanguageModel, LanguageModelCall, LanguageModelDoGenerateRequest,
+        LanguageModelDoGenerateResponse,
+    },
     providers::openai::ModelError,
 };
 pub mod model_id;
@@ -128,41 +130,14 @@ impl OpenAIChatModel {
 }
 
 impl LanguageModel for OpenAIChatModel {
-    fn generate_image(
+    fn do_generate(
         &self,
-        prompt: &str,
-        width: u32,
-        height: u32,
-    ) -> Result<Vec<u8>, crate::errors::ModelError> {
+        model_call: LanguageModelDoGenerateRequest,
+    ) -> Result<LanguageModelDoGenerateResponse, ModelError> {
         todo!()
     }
 
-    fn generate_object(
-        &self,
-        prompt: &str,
-        schema: &serde_json::Value,
-    ) -> Result<serde_json::Value, ModelError> {
-        todo!()
-    }
-
-    fn generate_text(&self, mut settings: GenerateTextOptions) -> Result<String, ModelError> {
-        if settings.max_steps < 1 {
-            return Err(ModelError::InvalidArgument(format!(
-                "OpenAIChatModel requires at least 1 step, got {}",
-                settings.max_steps
-            )));
-        }
-        // TODO: handle retry biz
-
-        let initial_prompt: StandardizedPrompt = StandardizedPrompt::try_from(settings.prompt)?;
-        settings.call_settings.prepare()?;
-
-        let model_usage = LanguageModelUsage::default();
-
-        Ok("yeah yeah yeha".to_string())
-    }
-
-    fn do_generate(&self, model_call: LanguageModelCall) -> Result<String, ModelError> {
+    fn supports_urls(&self, url: String) -> bool {
         todo!()
     }
 }

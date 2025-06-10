@@ -119,4 +119,3 @@ fn detect_single_message_characteristics(message: &CoreMessage) -> PromptCharact
         }
     }
 }
-

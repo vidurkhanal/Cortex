@@ -1,4 +1,4 @@
-use super::metadata::LanguageModelProviderMetadata;
+use crate::provider::metadata::LanguageModelProviderMetadata;
 
 pub enum LanguageModelSourceType {
     Url,

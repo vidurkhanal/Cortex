@@ -1,5 +1,6 @@
-use crate::{prompt::{CoreAssistantMessage, CoreToolMessage}, provider::{finish_reason::LanguageModelFinishReason, metadata::LanguageModelProviderMetadata, source::LanguageModelSource}};
-use super::{call_warning::LanguageModelCallWarning, logprobs::LanguageModelLogProbs, request_metadata::LanguageModelRequestMetadata, response_metadata::LanguageModelResponseMetadata, tools::Tool, LanguageModelUsage};
+use crate::{prompt::{CoreAssistantMessage, CoreToolMessage}, provider::metadata::LanguageModelProviderMetadata};
+use super::{call_warning::LanguageModelCallWarning, finish_reason::LanguageModelFinishReason, logprobs::LanguageModelLogprobs, request_metadata::LanguageModelRequestMetadata, response_metadata::LanguageModelResponseMetadata, source::LanguageModelSource, tools::Tool, usage::LanguageModelUsage};
+
 
 pub enum ResponseMessage {
     AssistantResponse(String, CoreAssistantMessage),
@@ -31,7 +32,7 @@ pub struct StepResult{
     finish_reason: LanguageModelFinishReason,
     usage: LanguageModelUsage,
     warnings: Option<Vec<LanguageModelCallWarning>>,
-    logprobs: Option<LanguageModelLogProbs>,
+    logprobs: Option<LanguageModelLogprobs>,
     request: LanguageModelRequestMetadata,
     response: StepResultResponse,
     provider_metadata: Option<LanguageModelProviderMetadata>,

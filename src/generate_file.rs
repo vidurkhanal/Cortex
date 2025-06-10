@@ -24,20 +24,16 @@ impl GenerateFile {
     }
 
     pub fn get_base64(&mut self) -> String {
-        if let Some(base64) = &self.base64 {
-            base64.clone()
-        } else {
+        if self.base64.is_none() {
             self.base64 = Some(general_purpose::STANDARD.encode(self.buffer.as_ref().unwrap()));
         }
         self.base64.clone().unwrap()
     }
 
-    pub fn get_buffer(&mut self) -> Vec<u8> {
-        if let Some(buffer) = &self.buffer {
-            buffer.clone()
-        } else {
-            self.buffer = Some(general_purpose::STANDARD.decode(self.base64.as_ref().unwrap()));
+    pub fn get_buffer(&mut self) -> Result<&[u8], base64::DecodeError> {
+        if self.buffer.is_none() {
+            self.buffer = Some(general_purpose::STANDARD.decode(self.base64.as_ref().unwrap())?);
         }
-        self.buffer.clone().unwrap()
+        Ok(self.buffer.as_ref().unwrap())
     }
 }

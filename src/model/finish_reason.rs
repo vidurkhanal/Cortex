@@ -7,3 +7,9 @@ pub enum LanguageModelFinishReason {
     Other,
     Unknown,
 }
+
+impl Default for LanguageModelFinishReason {
+    fn default() -> Self {
+        Self::Unknown
+    }
+}

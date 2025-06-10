@@ -1,10 +1,10 @@
-mod call_settings;
 mod content_part;
 mod message;
+mod retry_policy;
 pub mod standarize_prompt;
 
-pub use call_settings::CallSettings;
 pub use message::*;
+pub use retry_policy::RetryPolicy;
 
 /// Prompt part of the AI function options.
 /// It contains a system message, a simple text prompt, or a list of messages.

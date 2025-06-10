@@ -1,13 +1,30 @@
 pub mod call_settings;
 pub mod call_warning;
+pub mod finish_reason;
+pub mod function_tool_call;
 pub mod logprobs;
+pub mod message;
 pub mod request_metadata;
 pub mod response_metadata;
+pub mod source;
 pub mod step_result;
 pub mod tools;
+pub mod usage;
 
-use crate::errors::{self, ModelError};
-pub use call_settings::GenerateTextOptions;
+use crate::{
+    core::generate_text::GenerateTextOptions, errors::ModelError,
+    provider::metadata::LanguageModelProviderMetadata,
+};
+use call_settings::LanguageModelCallSettings;
+use call_warning::LanguageModelCallWarning;
+use finish_reason::LanguageModelFinishReason;
+use function_tool_call::LanguageModelFunctionToolCall;
+use logprobs::LanguageModelLogprobs;
+use message::LanguageModelMessage;
+use request_metadata::LanguageModelRequestMetadata;
+use response_metadata::LanguageModelResponseMetadata;
+use source::LanguageModelSource;
+use usage::LanguageModelUsage;
 
 pub enum LanguageModelCall {
     GenerateText(GenerateTextOptions),
@@ -16,24 +33,55 @@ pub enum LanguageModelCall {
 }
 
 pub trait LanguageModel {
-    fn generate_text(&self, generate_text_call: GenerateTextOptions) -> Result<String, ModelError>;
-    fn generate_image(
+    fn supports_urls(&self, url: String) -> bool;
+    fn do_generate(
         &self,
-        prompt: &str,
-        width: u32,
-        height: u32,
-    ) -> Result<Vec<u8>, errors::ModelError>;
-    fn generate_object(
-        &self,
-        prompt: &str,
-        schema: &serde_json::Value,
-    ) -> Result<serde_json::Value, ModelError>;
-    fn do_generate(&self, model_call: LanguageModelCall) -> Result<String, ModelError>;
+        request: LanguageModelDoGenerateRequest,
+    ) -> Result<LanguageModelDoGenerateResponse, ModelError>;
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Default)]
-pub struct LanguageModelUsage {
-    pub prompt_tokens: u32,
-    pub completion_tokens: u32,
-    pub total_tokens: u32,
+pub struct LanguageModelDoGenerateRequest {
+    call_settings: Option<LanguageModelCallSettings>,
+    input_format: LanguageModelDoGenerateRequestInputFormat,
+    prompt: Vec<LanguageModelMessage>,
+    provider_metadata: Option<LanguageModelProviderMetadata>,
+}
+
+pub enum LanguageModelDoGenerateRequestInputFormat {
+    Messages,
+    Prompt,
+}
+
+#[derive(Default)]
+pub struct LanguageModelDoGenerateResponse {
+    text: Option<String>,
+    reasoning: Vec<LanguageModelDoGenerateResponseReasoning>,
+    files: Vec<LanguageModelDoGenerateResponseFiles>,
+    tool_calls: Vec<LanguageModelFunctionToolCall>,
+    finish_reason: LanguageModelFinishReason,
+    usage: LanguageModelUsage,
+    request_body: Option<LanguageModelRequestMetadata>,
+    response: Option<LanguageModelResponseMetadata>,
+    warnings: Vec<LanguageModelCallWarning>,
+    provider_metadata: Option<LanguageModelProviderMetadata>,
+    sources: Option<LanguageModelSource>,
+    logprobs: Option<LanguageModelLogprobs>,
+}
+
+pub enum LanguageModelDoGenerateResponseReasoning {
+    Text {
+        text: String,
+        signature: Option<String>,
+    },
+    Redacted(String),
+}
+
+pub struct LanguageModelDoGenerateResponseFiles {
+    pub file_content: LanguageModelDoGenerateResponseFilesContent,
+    pub mime_type: String,
+}
+
+pub enum LanguageModelDoGenerateResponseFilesContent {
+    Base64(String),
+    Buffer(Vec<u8>),
 }

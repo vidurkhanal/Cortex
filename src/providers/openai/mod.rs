@@ -1,7 +1,5 @@
-mod chat_model;
-mod provider_settings;
-
-use std::str::FromStr;
+pub mod chat_model;
+pub mod provider_settings;
 
 use crate::{
     errors::{ModelError, ProviderError},
@@ -9,6 +7,7 @@ use crate::{
 };
 use chat_model::{model_id::OpenAIChatModelId, OpenAIChatModel};
 use provider_settings::OpenAIProviderSettings;
+use std::str::FromStr;
 
 pub struct OpenAIProvider {
     pub settings: OpenAIProviderSettings,
